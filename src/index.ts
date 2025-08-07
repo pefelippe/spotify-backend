@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 import authRoutes from './routes/auth.routes'
+import spotifyRoutes from './routes/spotify.routes'
 
 interface ErrorWithMessage {
   message: string
@@ -28,6 +29,7 @@ app.use(
 app.use(express.json())
 
 app.use('/auth', authRoutes)
+app.use('/spotify', spotifyRoutes)
 
 app.use(
   (
