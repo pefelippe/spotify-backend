@@ -30,7 +30,6 @@ describe('Server E2E', () => {
     app = createTestServer()
   })
 
-
   describe('CORS Configuration', () => {
     it('should include CORS headers in all responses', async () => {
       const response = await request(app)
