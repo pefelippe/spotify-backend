@@ -58,6 +58,162 @@ const createApp = () => {
 
   app.use('/auth', createAuthRoutes(container))
 
+  app.get('/', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Spotify Backend API</title>
+          <style>
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+            
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 20px;
+            }
+            
+            .container {
+              background: white;
+              border-radius: 16px;
+              box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+              padding: 40px;
+              max-width: 600px;
+              width: 100%;
+              text-align: center;
+            }
+            
+            .logo {
+              font-size: 3rem;
+              margin-bottom: 20px;
+            }
+            
+            h1 {
+              color: #1DB954;
+              margin-bottom: 20px;
+              font-size: 2.5rem;
+              font-weight: 700;
+            }
+            
+            .description {
+              color: #666;
+              font-size: 1.1rem;
+              line-height: 1.6;
+              margin-bottom: 30px;
+            }
+            
+            .endpoints {
+              background: #f8f9fa;
+              border-radius: 12px;
+              padding: 25px;
+              margin-bottom: 25px;
+            }
+            
+            .endpoints h3 {
+              color: #333;
+              margin-bottom: 20px;
+              font-size: 1.3rem;
+            }
+            
+            .endpoint {
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              margin: 10px 0;
+              font-family: 'Monaco', 'Menlo', monospace;
+              font-size: 0.9rem;
+              border-left: 4px solid #1DB954;
+              text-align: left;
+            }
+            
+            .method {
+              color: #1DB954;
+              font-weight: bold;
+            }
+            
+            .path {
+              color: #333;
+            }
+            
+            .description-endpoint {
+              color: #666;
+              font-size: 0.85rem;
+              margin-top: 5px;
+            }
+            
+            .environment {
+              background: #e9ecef;
+              padding: 15px;
+              border-radius: 8px;
+              color: #495057;
+              font-size: 0.9rem;
+            }
+            
+            .status {
+              display: inline-block;
+              background: #28a745;
+              color: white;
+              padding: 8px 16px;
+              border-radius: 20px;
+              font-size: 0.9rem;
+              margin-bottom: 20px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="logo">🎵</div>
+            <h1>Spotify Backend API</h1>
+            <div class="status">🟢 Online</div>
+            
+            <p class="description">
+              Bem-vindo à API do Spotify Backend. Este serviço fornece autenticação e dados musicais através de endpoints RESTful.
+            </p>
+            
+            <div class="endpoints">
+              <h3>📡 Endpoints Disponíveis</h3>
+              
+              <div class="endpoint">
+                <span class="method">GET</span> <span class="path">/health</span>
+                <div class="description-endpoint">Verificação de status da API</div>
+              </div>
+              
+              <div class="endpoint">
+                <span class="method">GET</span> <span class="path">/auth/login</span>
+                <div class="description-endpoint">Login OAuth do Spotify</div>
+              </div>
+              
+              <div class="endpoint">
+                <span class="method">GET</span> <span class="path">/auth/callback</span>
+                <div class="description-endpoint">Callback OAuth do Spotify</div>
+              </div>
+              
+              <div class="endpoint">
+                <span class="method">POST</span> <span class="path">/auth/refresh</span>
+                <div class="description-endpoint">Renovação do token de acesso</div>
+              </div>
+            </div>
+            
+            <div class="environment">
+              <strong>Ambiente:</strong> ${config.nodeEnv} | 
+              <strong>Timestamp:</strong> ${new Date().toLocaleString('pt-BR')}
+            </div>
+          </div>
+        </body>
+      </html>
+    `)
+  })
+
   app.get('/health', (req, res) => {
     res.json({
       status: 'ok',
