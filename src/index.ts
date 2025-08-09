@@ -54,8 +54,9 @@ const createApp = () => {
   return app
 }
 
+const app = createApp()
+
 const startServer = () => {
-  const app = createApp()
   const config = getAppConfig()
   const PORT = config.port
 
@@ -69,4 +70,4 @@ if (require.main === module) {
   startServer()
 }
 
-export { createApp, startServer }
+export default app
