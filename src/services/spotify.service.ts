@@ -1,52 +1,80 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 import qs from 'querystring'
+import dotenv from 'dotenv'
+import { SpotifyTokenResponse, AuthService } from '../types'
+import { createExternalServiceError } from '../utils/errors'
+import { getAppConfig } from '../config/app.config'
+import { createAuthHeaders } from '../utils/http'
+import { handleAuthError } from '../utils/error-handlers'
+import { SPOTIFY_URLS, TIMEOUTS, CONTENT_TYPES } from '../constants'
 
-import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '../config/env'
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local',
+})
 
-const makeSpotifyRequest = async (body: string) => {
-  return await axios.post('https://accounts.spotify.com/api/token', body, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
-    },
+interface AuthServiceDependencies {
+  httpClient?: AxiosInstance
+  config?: ReturnType<typeof getAppConfig>['spotify']
+}
+
+const createAuthHttpClient = (): AxiosInstance => {
+  return axios.create({
+    baseURL: SPOTIFY_URLS.AUTH_BASE,
+    timeout: TIMEOUTS.DEFAULT,
   })
 }
 
-export const getToken = async (code: string) => {
-  const body = qs.stringify({
-    grant_type: 'authorization_code',
-    code,
-    redirect_uri: REDIRECT_URI,
-  })
+export const createAuthService = (dependencies: AuthServiceDependencies = {}): AuthService => {
+  const config = dependencies.config || getAppConfig().spotify
+  const httpClient = dependencies.httpClient || createAuthHttpClient()
 
-  try {
-    const response = await makeSpotifyRequest(body)
-    return response.data
-  } catch (error: unknown) {
-    const axiosError = error as AxiosError
-    console.error('Spotify API error:', axiosError.message)
-    if (axiosError.response?.data) {
-      console.error('Response:', axiosError.response.data)
+  const makeAuthRequest = async (body: string): Promise<SpotifyTokenResponse> => {
+    try {
+      const response = await httpClient.post('/token', body, {
+        headers: createAuthHeaders(config.clientId, config.clientSecret),
+      })
+      return response.data
+    } catch (error) {
+      return handleAuthError(error, 'authentication request')
     }
-    throw error
+  }
+
+  const getToken = async (code: string): Promise<SpotifyTokenResponse> => {
+    const body = qs.stringify({
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: config.redirectUri,
+    })
+
+    return makeAuthRequest(body)
+  }
+
+  const getRefreshToken = async (refreshToken: string): Promise<SpotifyTokenResponse> => {
+    const body = qs.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    })
+
+    return makeAuthRequest(body)
+  }
+
+  const validateToken = async (accessToken: string) => {
+    try {
+      const response = await axios.get('https://api.spotify.com/v1/me', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        timeout: TIMEOUTS.SHORT,
+      })
+      return response.data
+    } catch (error) {
+      return handleAuthError(error, 'token validation')
+    }
+  }
+
+  return {
+    getToken,
+    getRefreshToken,
+    validateToken,
   }
 }
 
-export const getRefreshToken = async (refresh_token: string) => {
-  const body = qs.stringify({
-    grant_type: 'refresh_token',
-    refresh_token,
-  })
-
-  try {
-    const response = await makeSpotifyRequest(body)
-    return response.data
-  } catch (error: unknown) {
-    const axiosError = error as AxiosError
-    console.error('Spotify refresh error:', axiosError.message)
-    if (axiosError.response?.data) {
-      console.error('Response:', axiosError.response.data)
-    }
-    throw error
-  }
-}
+export const authService = createAuthService()

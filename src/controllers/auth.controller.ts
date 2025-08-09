@@ -1,81 +1,87 @@
-import { Request, Response } from 'express'
-import { getToken, getRefreshToken } from '../services/spotify.service'
+import { Request, Response, NextFunction } from 'express'
+import dotenv from 'dotenv'
 import { buildQueryString } from '../utils/build-query-string'
-import { CLIENT_ID, REDIRECT_URI } from '../config/env'
+import { getAppConfig } from '../config/app.config'
+import { AuthService } from '../types'
+import { createValidationError } from '../utils/errors'
+import { createAuthService } from '../services/spotify.service'
+import { createMetaResponse } from '../utils/http'
+import { SPOTIFY_URLS } from '../constants'
 
-interface SpotifyError {
-  message: string
-  status?: number
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local',
+})
+
+interface AuthControllerDependencies {
+  authService: AuthService
+  config?: ReturnType<typeof getAppConfig>
 }
 
-const SCOPES = [
-  'user-read-private',
-  'user-read-email',
-  'user-top-read',
-  'playlist-read-private',
-  'playlist-read-collaborative',
-  'playlist-modify-public',
-  'playlist-modify-private',
-  'ugc-image-upload',
-  'streaming',
-  'app-remote-control',
-  'user-read-playback-state',
-  'user-modify-playback-state',
-  'user-library-read',
-  'user-library-modify',
-  'user-follow-read',
-  'user-follow-modify',
-  'user-read-recently-played',
-  'user-read-currently-playing',
-  'user-read-playback-position',
-].join(' ')
+const createAuthController = (dependencies: AuthControllerDependencies) => {
+  const { authService, config = getAppConfig() } = dependencies
 
-export const login = (_: Request, res: Response) => {
-  const query = buildQueryString({
-    client_id: CLIENT_ID,
-    response_type: 'code',
-    redirect_uri: REDIRECT_URI,
-    scope: SCOPES,
-  })
+  const login = (_: Request, res: Response): void => {
+    const query = buildQueryString({
+      client_id: config.spotify.clientId,
+      response_type: 'code',
+      redirect_uri: config.spotify.redirectUri,
+      scope: config.spotify.scopes.join(' '),
+    })
 
-  const spotifyUrl = `https://accounts.spotify.com/authorize?${query}`
-  res.redirect(spotifyUrl)
-}
-
-export const callback = async (req: Request, res: Response) => {
-  const code = req.query.code as string
-  const error = req.query.error as string
-
-  if (error) {
-    return res.status(400).json({ error: `Spotify error: ${error}` })
+    const spotifyUrl = `${SPOTIFY_URLS.AUTHORIZE}?${query}`
+    res.redirect(spotifyUrl)
   }
 
-  if (!code) {
-    return res.status(400).json({ error: 'Missing code' })
+  const callback = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { code, error } = req.query
+
+    if (error) {
+      const validationError = createValidationError(`Spotify error: ${error}`)
+      return next(validationError)
+    }
+
+    if (!code || typeof code !== 'string') {
+      const validationError = createValidationError('Missing authorization code')
+      return next(validationError)
+    }
+
+    try {
+      const data = await authService.getToken(code)
+      res.json({
+        data,
+        meta: createMetaResponse(req.path, req.method),
+      })
+    } catch (error) {
+      next(error)
+    }
   }
 
-  try {
-    const data = await getToken(code)
-    res.json(data)
-  } catch (err: unknown) {
-    const error = err as SpotifyError
-    console.error('Token exchange error:', error.message)
-    res.status(500).json({ error: 'Failed to exchange token' })
-  }
-}
+  const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { refresh_token } = req.body
 
-export const refreshToken = async (req: Request, res: Response) => {
-  const { refresh_token } = req.body
-  if (!refresh_token) {
-    return res.status(400).json({ error: 'Missing refresh_token' })
+    if (!refresh_token) {
+      const validationError = createValidationError('Missing refresh_token')
+      return next(validationError)
+    }
+
+    try {
+      const data = await authService.getRefreshToken(refresh_token)
+      res.json({
+        data,
+        meta: createMetaResponse(req.path, req.method),
+      })
+    } catch (error) {
+      next(error)
+    }
   }
 
-  try {
-    const data = await getRefreshToken(refresh_token)
-    res.json(data)
-  } catch (err: unknown) {
-    const error = err as SpotifyError
-    console.error('Token refresh error:', error.message)
-    res.status(500).json({ error: 'Failed to refresh token' })
+  return {
+    login,
+    callback,
+    refreshToken,
   }
 }
+
+export const authController = createAuthController({ authService: createAuthService() })
+
+export { createAuthController }

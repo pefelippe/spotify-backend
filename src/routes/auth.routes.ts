@@ -1,10 +1,19 @@
 import { Router } from 'express'
-import { login, callback, refreshToken } from '../controllers/auth.controller'
+import { Container } from '../container'
+import { createValidationMiddleware, validationRules } from '../middleware/validation'
 
-const router = Router()
+const createAuthRoutes = (container: Container) => {
+  const router = Router()
 
-router.get('/login', login)
-router.get('/callback', callback)
-router.post('/refresh', refreshToken)
+  router.get('/login', container.controllers.authController.login)
+  router.get('/callback', container.controllers.authController.callback)
+  router.post(
+    '/refresh',
+    createValidationMiddleware.body([validationRules.required.refresh_token]),
+    container.controllers.authController.refreshToken
+  )
 
-export default router
+  return router
+}
+
+export default createAuthRoutes
