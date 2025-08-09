@@ -34,7 +34,25 @@ export const AUTH_TYPES = {
   BASIC: 'Basic',
 } as const
 
-export const SPOTIFY_SCOPES = ['user-read-private', 'user-read-email'] as const
+export const SPOTIFY_SCOPES = [
+  'user-read-private',
+  'user-read-email',
+  'user-read-recently-played',
+  'user-read-playback-state',
+  'user-modify-playback-state',
+  'user-read-currently-playing',
+  'playlist-read-private',
+  'playlist-read-collaborative',
+  'playlist-modify-public',
+  'playlist-modify-private',
+  'user-library-read',
+  'user-library-modify',
+  'user-follow-read',
+  'user-follow-modify',
+  'user-top-read',
+  'streaming',
+  'app-remote-control',
+] as const
 
 export const ENVIRONMENT = {
   DEVELOPMENT: 'development',
