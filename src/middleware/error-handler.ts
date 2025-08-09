@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { AppError, ApiResponse } from '../types'
 import { isAppError, createInternalServerError } from '../utils/errors'
 import { createLogger } from '../utils/logger'
@@ -6,7 +6,12 @@ import { createMetaResponse } from '../utils/http'
 
 const logger = createLogger('ErrorHandler')
 
-export const errorHandler = (error: Error | AppError, req: Request, res: Response): void => {
+export const errorHandler = (
+  error: Error | AppError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   let appError: AppError
 
   if (isAppError(error)) {

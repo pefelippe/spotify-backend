@@ -22,9 +22,26 @@ const createApp = () => {
   const config = getAppConfig()
 
   app.use(express.json())
+
+  const allowedOrigins = ['https://spotify-frontend-weld.vercel.app', 'http://localhost:5173']
+
   app.use(
     cors({
-      origin: config.frontendUrl,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true)
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true)
+        }
+        return callback(new Error('Not allowed by CORS'))
+      },
+      credentials: true,
+    })
+  )
+
+  app.options(
+    '*',
+    cors({
+      origin: allowedOrigins,
       credentials: true,
     })
   )
@@ -63,7 +80,6 @@ const startServer = () => {
   app.listen(PORT, () => {
     logger.info(`🚀 Server running on port ${PORT} in ${config.nodeEnv} mode`)
     logger.info(`📊 Health check available at http://localhost:${PORT}/health`)
-    logger.info('hello')
   })
 }
 
