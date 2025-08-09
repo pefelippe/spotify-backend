@@ -63,6 +63,7 @@ const startServer = () => {
   app.listen(PORT, () => {
     logger.info(`🚀 Server running on port ${PORT} in ${config.nodeEnv} mode`)
     logger.info(`📊 Health check available at http://localhost:${PORT}/health`)
+    logger.info('hello')
   })
 }
 
