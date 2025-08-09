@@ -1,18 +1,3 @@
-import { FOLLOW_TYPES } from '../constants'
-
-export const validateFollowUnfollowBody = (
-  body: any
-): body is { type: 'artist' | 'user'; ids: string[] } => {
-  return (
-    body &&
-    typeof body.type === 'string' &&
-    FOLLOW_TYPES.includes(body.type as 'artist' | 'user') &&
-    Array.isArray(body.ids) &&
-    body.ids.length > 0 &&
-    body.ids.every((id: unknown) => typeof id === 'string')
-  )
-}
-
 export const validateTokenFormat = (token: string): boolean => {
   const parts = token.split('.')
   if (parts.length !== 3) {
@@ -28,6 +13,7 @@ export const validateTokenFormat = (token: string): boolean => {
     })
     return true
   } catch (error) {
+    console.error('Error validating token format:', error)
     return false
   }
 }

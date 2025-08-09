@@ -1,12 +1,11 @@
-import axios, { AxiosError, AxiosInstance } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import qs from 'querystring'
 import dotenv from 'dotenv'
 import { SpotifyTokenResponse, AuthService } from '../types'
-import { createExternalServiceError } from '../utils/errors'
 import { getAppConfig } from '../config/app.config'
 import { createAuthHeaders } from '../utils/http'
 import { handleAuthError } from '../utils/error-handlers'
-import { SPOTIFY_URLS, TIMEOUTS, CONTENT_TYPES } from '../constants'
+import { SPOTIFY_URLS, TIMEOUTS } from '../constants'
 
 dotenv.config({
   path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local',

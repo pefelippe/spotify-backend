@@ -1,6 +1,6 @@
-# Spotify Backend
+# Spotify Auth Backend
 
-Backend service for Spotify integration built with TypeScript and Express.js.
+Backend service for Spotify authentication built with TypeScript and Express.js.
 
 ## 🚀 Getting Started
 
@@ -46,14 +46,6 @@ Backend service for Spotify integration built with TypeScript and Express.js.
 - `GET /auth/login` - Initiate Spotify OAuth flow
 - `GET /auth/callback` - Handle OAuth callback
 - `POST /auth/refresh` - Refresh access token
-
-### Spotify API
-
-- `GET /spotify/playlists` - Get user playlists
-- `GET /spotify/following` - Get followed artists/users
-- `PUT /spotify/following` - Follow artists/users
-- `DELETE /spotify/following` - Unfollow artists/users
-- `PUT /spotify/playlists/:playlistId/image` - Upload playlist image
 
 ### Health Check
 

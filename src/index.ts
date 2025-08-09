@@ -5,7 +5,6 @@ import dotenv from 'dotenv'
 import { getAppConfig } from './config/app.config'
 import { createContainer } from './container'
 import createAuthRoutes from './routes/auth.routes'
-import createSpotifyRoutes from './routes/spotify.routes'
 import { errorHandler } from './middleware/error-handler'
 import { createLogger } from './utils/logger'
 
@@ -41,7 +40,6 @@ const createApp = () => {
   })
 
   app.use('/auth', createAuthRoutes(container))
-  app.use('/spotify', createSpotifyRoutes(container))
 
   app.get('/health', (req, res) => {
     res.json({

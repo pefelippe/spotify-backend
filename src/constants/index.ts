@@ -34,35 +34,7 @@ export const AUTH_TYPES = {
   BASIC: 'Basic',
 } as const
 
-export const SPOTIFY_SCOPES = [
-  'user-read-private',
-  'user-read-email',
-  'user-top-read',
-  'playlist-read-private',
-  'playlist-read-collaborative',
-  'playlist-modify-public',
-  'playlist-modify-private',
-  'ugc-image-upload',
-  'streaming',
-  'app-remote-control',
-  'user-read-playback-state',
-  'user-modify-playback-state',
-  'user-library-read',
-  'user-library-modify',
-  'user-follow-read',
-  'user-follow-modify',
-  'user-read-recently-played',
-  'user-read-currently-playing',
-  'user-read-playback-position',
-] as const
-
-export const VALIDATION_RULES = {
-  MAX_LIMIT: 50,
-  MIN_LIMIT: 1,
-  MIN_OFFSET: 0,
-} as const
-
-export const FOLLOW_TYPES = ['artist', 'user'] as const
+export const SPOTIFY_SCOPES = ['user-read-private', 'user-read-email'] as const
 
 export const ENVIRONMENT = {
   DEVELOPMENT: 'development',

@@ -17,11 +17,6 @@ export interface ApiResponse<T = unknown> {
   }
 }
 
-export interface PaginationParams {
-  limit?: number
-  offset?: number
-}
-
 export interface SpotifyTokenResponse {
   access_token: string
   token_type: string
@@ -35,32 +30,6 @@ export interface SpotifyUser {
   display_name: string
   email: string
   images?: Array<{ url: string; width?: number; height?: number }>
-}
-
-export interface SpotifyPlaylist {
-  id: string
-  name: string
-  description?: string
-  images?: Array<{ url: string; width?: number; height?: number }>
-  owner: SpotifyUser
-  public: boolean
-  collaborative: boolean
-  tracks: {
-    total: number
-  }
-}
-
-export interface SpotifyFollowingResponse {
-  artists?: {
-    items: Array<{ id: string; name: string; images?: Array<{ url: string }> }>
-    total: number
-    next?: string
-  }
-  users?: {
-    items: Array<{ id: string; display_name: string; images?: Array<{ url: string }> }>
-    total: number
-    next?: string
-  }
 }
 
 export interface RequestWithAuth extends Request {
@@ -78,20 +47,6 @@ export interface AppConfig {
     redirectUri: string
     scopes: string[]
   }
-}
-
-export interface SpotifyApiService {
-  getUserPlaylists(
-    accessToken: string,
-    params?: PaginationParams
-  ): Promise<{ items: SpotifyPlaylist[] }>
-  getFollowing(
-    accessToken: string,
-    params: { type: 'artist' | 'user'; after?: string; limit?: number }
-  ): Promise<SpotifyFollowingResponse>
-  follow(accessToken: string, body: { type: 'artist' | 'user'; ids: string[] }): Promise<void>
-  unfollow(accessToken: string, body: { type: 'artist' | 'user'; ids: string[] }): Promise<void>
-  uploadPlaylistImage(accessToken: string, playlistId: string, imageBase64: string): Promise<void>
 }
 
 export interface AuthService {
