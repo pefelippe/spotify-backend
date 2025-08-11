@@ -1,163 +1,171 @@
-# Spotify Backend API
+# API de Backend do Spotify
 
-A Node.js backend service that provides Spotify OAuth authentication and musical data through RESTful endpoints.
+Um serviço backend em Node.js que fornece autenticação OAuth do Spotify e dados musicais por meio de endpoints RESTful.
 
-![API Overview](api-overview.jpg)
+# Deploy
 
-## 🚀 Features
+https://spotify-backend-psi.vercel.app/
 
-- **Spotify OAuth Integration** - Secure authentication with Spotify's API
-- **RESTful API** - Clean, standardized endpoints for easy integration
-- **TypeScript** - Full type safety and modern JavaScript features
-- **Comprehensive Testing** - Unit, integration, and E2E test coverage
-- **Code Quality** - ESLint, Prettier, and SonarQube integration
-- **Docker Support** - Containerized deployment ready
+## Sonar
 
-## 📋 Prerequisites
+https://sonarcloud.io/project/overview?id=pefelippe_spotify-backend
+
+![Visão Geral da API](api-overview.jpg)
+
+## 🚀 Recursos
+
+- **Integração com Spotify OAuth** - Autenticação segura com a API do Spotify
+- **API RESTful** - Endpoints limpos e padronizados para fácil integração
+- **TypeScript** - Tipagem completa e recursos modernos do JavaScript
+- **Testes Abrangentes** - Cobertura de testes unitários, integração e E2E
+- **Qualidade de Código** - Integração com ESLint, Prettier e SonarQube
+- **Suporte a Docker** - Pronto para implantação containerizada
+
+## 📋 Pré-requisitos
 
 - Node.js 18+
-- npm or yarn
-- Spotify Developer Account
-- Spotify App credentials
+- npm ou yarn
+- Conta de Desenvolvedor do Spotify
+- Credenciais do App do Spotify
 
-## 🛠️ Installation
+## 🛠️ Instalação
 
-1. **Clone the repository**
+1. **Clone o repositório**
 
    ```bash
    git clone <repository-url>
    cd spotify-backend
    ```
 
-2. **Install dependencies**
+2. **Instale as dependências**
 
    ```bash
    npm install
-   # or
+   # ou
    yarn install
    ```
 
-3. **Environment Setup**
-   Create a `.env.local` file with your Spotify credentials:
+3. **Configuração de Ambiente**
+   Crie um arquivo `.env.local` com suas credenciais do Spotify:
 
    ```env
-   SPOTIFY_CLIENT_ID=your_spotify_client_id
-   SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-   SPOTIFY_REDIRECT_URI=frontend-url/auth/callback
+   SPOTIFY_CLIENT_ID=seu_client_id_spotify
+   SPOTIFY_CLIENT_SECRET=seu_client_secret_spotify
+   SPOTIFY_REDIRECT_URI=url-do-frontend/auth/callback
    ```
 
-4. **Run Setup Script**
+4. **Executar Script de Setup**
    ```bash
    npm run setup
    ```
 
-## 🚀 Usage
+## 🚀 Uso
 
-### Development
+### Desenvolvimento
 
 ```bash
 npm run dev
 ```
 
-### Production
+### Produção
 
 ```bash
 npm run build
 npm start
 ```
 
-### Testing
+### Testes
 
 ```bash
-# Run all tests
+# Executar todos os testes
 npm test
 
-# Unit tests only
+# Apenas testes unitários
 npm run test:unit
 
-# E2E tests
+# Testes E2E
 npm run test:e2e
 
-# Watch mode
+# Modo watch
 npm run test:watch
 
-# Coverage report
+# Relatório de cobertura
 npm run test:coverage
 ```
 
-## 📡 API Endpoints
+## 📡 Endpoints da API
 
-| Method | Endpoint         | Description             |
-| ------ | ---------------- | ----------------------- |
-| `GET`  | `/health`        | API status verification |
-| `GET`  | `/auth/login`    | Spotify OAuth login     |
-| `GET`  | `/auth/callback` | Spotify OAuth callback  |
-| `POST` | `/auth/refresh`  | Access token renewal    |
+| Método | Endpoint         | Descrição                    |
+| ------ | ---------------- | ---------------------------- |
+| `GET`  | `/health`        | Verificação de status da API |
+| `GET`  | `/auth/login`    | Login OAuth do Spotify       |
+| `GET`  | `/auth/callback` | Callback OAuth do Spotify    |
+| `POST` | `/auth/refresh`  | Renovação de token de acesso |
 
-## 🏗️ Project Structure
+## 🏗️ Estrutura do Projeto
 
 ```
 src/
-├── config/          # Configuration files
-├── controllers/     # Request handlers
-├── middleware/      # Express middleware
-├── routes/          # API route definitions
-├── services/        # Business logic
-├── types/           # TypeScript type definitions
-└── utils/           # Utility functions
+├── config/          # Arquivos de configuração
+├── controllers/     # Handlers das requisições
+├── middleware/      # Middlewares do Express
+├── routes/          # Definições de rotas da API
+├── services/        # Regras de negócio
+├── types/           # Definições de tipos TypeScript
+└── utils/           # Funções utilitárias
 ```
 
-## 🧪 Testing
+## 🧪 Testes
 
-The project includes comprehensive testing with Jest:
+O projeto inclui testes abrangentes com Jest:
 
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: API endpoint testing
-- **E2E Tests**: Full workflow testing
-- **Test Coverage**: Detailed coverage reports
+- **Testes Unitários**: Teste de componentes individuais
+- **Testes de Integração**: Teste dos endpoints da API
+- **Testes E2E**: Teste do fluxo completo
+- **Cobertura de Testes**: Relatórios detalhados de cobertura
 
-## 🔧 Development Tools
+## 🔧 Ferramentas de Desenvolvimento
 
-- **ESLint** - Code linting and style enforcement
-- **Prettier** - Code formatting
-- **Husky** - Git hooks for quality assurance
-- **SonarQube** - Code quality analysis
+- **ESLint** - Linting e padronização de código
+- **Prettier** - Formatação de código
+- **Husky** - Hooks do Git para garantia de qualidade
+- **SonarQube** - Análise de qualidade de código
 
 ## 🐳 Docker
 
-Build and run with Docker:
+Build e execução com Docker:
 
 ```bash
-# Build image
+# Build da imagem
 docker build -t spotify-backend .
 
-# Run container
+# Executar o container
 docker run -p 3000:3000 spotify-backend
 ```
 
 ## 📝 Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run test` - Run all tests
-- `npm run lint` - Check code quality
-- `npm run format` - Format code with Prettier
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Build para produção
+- `npm run start` - Inicia o servidor em produção
+- `npm run test` - Executa todos os testes
+- `npm run lint` - Verifica a qualidade do código
+- `npm run format` - Formata o código com Prettier
 
-## 🤝 Contributing
+## 🤝 Contribuindo
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+1. Faça um fork do repositório
+2. Crie uma branch de feature
+3. Faça suas alterações
+4. Execute os testes e o lint
+5. Envie um pull request
 
-## 📄 License
+## 📄 Licença
 
-This project is licensed under the MIT License.
+Este projeto está licenciado sob a Licença MIT.
 
 ## 🔗 Links
 
-- [Spotify Developer Documentation](https://developer.spotify.com/documentation)
-- [Express.js Documentation](https://expressjs.com/)
-- [TypeScript Documentation](https://www.typescriptlang.org/)
+- [Documentação do Spotify Developer](https://developer.spotify.com/documentation)
+- [Documentação do Express.js](https://expressjs.com/)
+- [Documentação do TypeScript](https://www.typescriptlang.org/)
