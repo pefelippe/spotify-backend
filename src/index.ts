@@ -26,7 +26,7 @@ const createApp = () => {
   const allowedOrigins = [
     'https://spotify-frontend2-weld.vercel.app',
     'http://localhost:5173',
-    // add ngrok here if you are using it
+    // add ngrok here if you are using
     'https://d35f04a2c751.ngrok-free.app',
   ]
 
