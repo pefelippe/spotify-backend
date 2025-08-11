@@ -23,7 +23,12 @@ const createApp = () => {
 
   app.use(express.json())
 
-  const allowedOrigins = ['https://spotify-frontend-weld.vercel.app', 'http://localhost:5173']
+  const allowedOrigins = [
+    'https://spotify-frontend2-weld.vercel.app',
+    'http://localhost:5173',
+    // add ngrok here if you are using it
+    'https://d35f04a2c751.ngrok-free.app',
+  ]
 
   app.use(
     cors({

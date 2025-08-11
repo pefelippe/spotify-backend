@@ -23,7 +23,6 @@ export const createAppConfig = (): AppConfig => ({
 
 class AppConfigManager {
   private static instance: AppConfig | null = null
-  private static readonly lock = new Promise<void>(() => {})
 
   static getInstance(): AppConfig {
     if (!AppConfigManager.instance) {
