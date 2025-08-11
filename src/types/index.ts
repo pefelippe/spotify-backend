@@ -41,6 +41,7 @@ export interface AppConfig {
   port: number
   nodeEnv: string
   frontendUrl: string
+  allowedOrigins: string[]
   spotify: {
     clientId: string
     clientSecret: string

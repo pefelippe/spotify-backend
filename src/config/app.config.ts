@@ -18,6 +18,10 @@ export const createAppConfig = (): AppConfig => ({
   port: parseInt(process.env.PORT || '3001', 10),
   nodeEnv: process.env.NODE_ENV || ENVIRONMENT.DEVELOPMENT,
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+  allowedOrigins: (process.env.ALLOWED_ORIGINS || 'http://localhost:5173')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
   spotify: createSpotifyConfig(),
 })
 

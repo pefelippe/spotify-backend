@@ -24,7 +24,7 @@ const createApp = () => {
 
   app.use(express.json())
 
-  const allowedOrigins = ['http://localhost:5173', 'https://d35f04a2c751.ngrok-free.app']
+  const allowedOrigins = config.allowedOrigins
 
   const isOriginAllowed = (origin?: string): boolean => {
     if (!origin) return true
