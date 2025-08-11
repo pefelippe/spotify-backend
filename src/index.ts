@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import type { CorsOptions } from 'cors'
 import dotenv from 'dotenv'
 
 import { getAppConfig } from './config/app.config'
@@ -23,33 +24,27 @@ const createApp = () => {
 
   app.use(express.json())
 
-  const allowedOrigins = [
-    'https://spotify-frontend2-weld.vercel.app',
-    'http://localhost:5173',
-    // add ngrok here if you are using
-    'https://d35f04a2c751.ngrok-free.app',
-  ]
+  const allowedOrigins = ['http://localhost:5173', 'https://d35f04a2c751.ngrok-free.app']
 
-  app.use(
-    cors({
-      origin: (origin, callback) => {
-        if (!origin) return callback(null, true)
-        if (allowedOrigins.includes(origin)) {
-          return callback(null, true)
-        }
-        return callback(new Error('Not allowed by CORS'))
-      },
-      credentials: true,
-    })
-  )
+  const isOriginAllowed = (origin?: string): boolean => {
+    if (!origin) return true
+    try {
+      const { hostname } = new URL(origin)
+      if (hostname.endsWith('.vercel.app')) return true
+    } catch {}
+    return allowedOrigins.includes(origin)
+  }
 
-  app.options(
-    '*',
-    cors({
-      origin: allowedOrigins,
-      credentials: true,
-    })
-  )
+  const corsOptions: CorsOptions = {
+    credentials: true,
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin || undefined)) return callback(null, true)
+      return callback(new Error('Not allowed by CORS'))
+    },
+  }
+
+  app.use(cors(corsOptions))
+  app.options('*', cors(corsOptions))
 
   app.use((req, res, next) => {
     logger.info(`${req.method} ${req.path}`, {
